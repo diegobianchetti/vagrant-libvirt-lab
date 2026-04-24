@@ -10,7 +10,6 @@ apt-get upgrade -y
 
 apt-get install -y qemu-guest-agent
 
-systemctl enable qemu-guest-agent
-systemctl start  qemu-guest-agent
+systemctl start qemu-guest-agent || true
 
 apt-get install -y curl wget git net-tools
