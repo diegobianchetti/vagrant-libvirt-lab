@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
     lab.vm.provider :libvirt do |libvirt|
       libvirt.cpus   = 2
       libvirt.memory = 2048
+      libvirt.channel :type => 'unix', :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
     end
 
     lab.vm.provision "shell", path: "provisioning/setup.sh"
