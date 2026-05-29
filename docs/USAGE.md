@@ -41,6 +41,9 @@ vagrant destroy -f
 
 ## 5. Troubleshooting
 
+**`[fog][WARNING] Unrecognized arguments: libvirt_ip_command` em todo comando vagrant**
+Incompatibilidade de versão entre `vagrant-libvirt` 0.12.2 e `fog-core`. O aviso é benigno e pode ser ignorado — não afeta a criação nem o funcionamento da VM. Solução definitiva: `vagrant plugin update vagrant-libvirt`.
+
 **Plugin não encontrado ao executar `vagrant up`**
 Instale o plugin antes de subir a VM:
 ```bash
@@ -50,3 +53,13 @@ vagrant plugin install vagrant-libvirt
 **`virsh domifaddr lab` não retorna o IP**
 O qemu-guest-agent pode levar até 30 segundos para iniciar após o boot.
 Aguarde e tente novamente, ou use `nmap` como alternativa.
+
+**`/dev/kvm` não existe após reboot**
+O módulo KVM não foi carregado. Configure o carregamento automático detectando o fabricante da CPU:
+```bash
+KVM_MODULE=$(awk '/^vendor_id/{print ($3=="GenuineIntel")?"kvm_intel":"kvm_amd"; exit}' /proc/cpuinfo)
+printf 'kvm\n%s\n' "$KVM_MODULE" | sudo tee /etc/modules-load.d/kvm.conf
+sudo modprobe "$KVM_MODULE"
+```
+O arquivo `/etc/modules-load.d/kvm.conf` garante o carregamento nas próximas inicializações.
+A ordem importa: `kvm` deve vir antes do módulo específico do fabricante.
