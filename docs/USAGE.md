@@ -3,6 +3,7 @@
 ## 1. Pré-requisitos do host
 
 - libvirt e qemu-kvm instalados e em execução
+- Módulos KVM carregados (`kvm` + `kvm_intel` ou `kvm_amd` conforme a CPU) — ver troubleshooting se `/dev/kvm` não existir
 - Usuário nos grupos `libvirt` e `kvm`
 - Vagrant >= 2.4 instalado
 - Plugin vagrant-libvirt instalado:
@@ -54,7 +55,7 @@ vagrant plugin install vagrant-libvirt
 O qemu-guest-agent pode levar até 30 segundos para iniciar após o boot.
 Aguarde e tente novamente, ou use `nmap` como alternativa.
 
-**`/dev/kvm` não existe após reboot**
+**`/dev/kvm` não existe após reboot** ou **`could not get preferred machine for /usr/bin/qemu-system-x86_64 type=kvm`**
 O módulo KVM não foi carregado. Configure o carregamento automático detectando o fabricante da CPU:
 ```bash
 KVM_MODULE=$(awk '/^vendor_id/{print ($3=="GenuineIntel")?"kvm_intel":"kvm_amd"; exit}' /proc/cpuinfo)
